@@ -1,0 +1,5 @@
+{
+  "name": "Telegram Bot Multi-Manager",
+  "description": "A centralized dashboard to deploy, manage, and monitor multiple Telegram bots from a single service.",
+  "requestFramePermissions": []
+}

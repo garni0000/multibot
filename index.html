@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BotManager</title>
+    <script>
+      // Silence MetaMask/Web3 injection errors and rejections
+      (function() {
+        const silence = (event) => {
+          const msg = event.message || (event.reason && event.reason.message) || '';
+          if (msg.includes('MetaMask') || msg.includes('ethereum') || msg.includes('web3')) {
+            // console.warn('Silenced Web3 error:', msg);
+            event.preventDefault();
+            event.stopPropagation();
+            return true;
+          }
+          return false;
+        };
+        window.addEventListener('error', silence, true);
+        window.addEventListener('unhandledrejection', silence, true);
+
+        // Define a dummy ethereum object to satisfy scripts looking for it 
+        // without actually triggering the extension's connection logic
+        if (typeof window !== 'undefined' && !window.ethereum) {
+          window.ethereum = {
+            isMetaMask: true,
+            request: () => new Promise(() => {}), // Never resolves
+            on: () => {},
+            removeListener: () => {},
+            enable: () => new Promise(() => {}),
+            send: () => {},
+            sendAsync: () => {}
+          };
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
