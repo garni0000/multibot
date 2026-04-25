@@ -28,6 +28,12 @@ async function startServer() {
     res.json({ status: "ok", uptime: process.uptime() });
   });
 
+  // Keep-alive route (Public)
+  app.get("/keep-alive", (req, res) => {
+    console.log(`[Keep-Alive] Ping received at ${new Date().toISOString()}`);
+    res.send("I'm alive! 🚀");
+  });
+
   // Auth Middleware
   const authMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const apiKey = req.headers["x-api-key"];
