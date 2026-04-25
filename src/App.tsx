@@ -112,7 +112,16 @@ export default function App() {
         fetchBots();
       }
     }, 5000);
-    return () => clearInterval(interval);
+
+    // Auto-ping keep-alive every 14 minutes to prevent Render sleep (if tab is open)
+    const keepAlive = setInterval(() => {
+      fetch('/keep-alive').catch(() => {});
+    }, 14 * 60 * 1000);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(keepAlive);
+    };
   }, []);
 
   const handleStart = async (id: string) => {
@@ -294,7 +303,11 @@ export default function App() {
             </div>
             <div>
               <h1 className="font-bold text-lg tracking-tight">BotManager</h1>
-              <p className="text-xs text-white/50 uppercase tracking-widest font-medium">Railway Central</p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-white/50 uppercase tracking-widest font-medium">Railway Central</p>
+                <div className="w-1 h-1 bg-green-500 rounded-full" />
+                <span className="text-[10px] text-green-500/70 font-mono">/keep-alive ACTIVE</span>
+              </div>
             </div>
           </div>
           
